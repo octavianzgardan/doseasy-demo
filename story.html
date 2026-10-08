@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DosEasy · Story</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #0B0560; }
+  #stage { position: absolute; left: 50%; top: 50%; width: 1440px; height: 900px; transform-origin: center center; }
+  #stage iframe { width: 1440px; height: 900px; border: 0; display: block; background: #1B1385; }
+</style>
+</head>
+<body>
+<div id="stage"><iframe id="app" src="story_app.html" title="DosEasy story"></iframe></div>
+<script>
+  (function () {
+    var stage = document.getElementById('stage');
+    var app = document.getElementById('app');
+    function fit() {
+      var s = Math.min(window.innerWidth / 1440, window.innerHeight / 900);
+      stage.style.transform = 'translate(-50%, -50%) scale(' + s + ')';
+    }
+    window.addEventListener('resize', fit);
+    fit();
+    app.addEventListener('load', function () { try { app.contentWindow.focus(); } catch (e) {} });
+    // keys pressed while the outer page has focus are passed on to the story
+    window.addEventListener('keydown', function (e) {
+      try {
+        app.contentWindow.dispatchEvent(new KeyboardEvent('keydown', { key: e.key, code: e.code, bubbles: true }));
+        if (e.key === ' ' || e.key.indexOf('Arrow') === 0 || e.key === 'PageDown' || e.key === 'PageUp') e.preventDefault();
+        app.contentWindow.focus();
+      } catch (err) {}
+    });
+  })();
+</script>
+</body>
+</html>
